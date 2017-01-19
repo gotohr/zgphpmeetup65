@@ -1,0 +1,21 @@
+{
+    "name": "cljubo/workflow",
+    "type": "example",
+    "require": {
+        "doctrine/common": "^2.7"
+    },
+    "authors": [
+        {
+            "name": "Ljubo Čanić",
+            "email": "lc@snowfall.se"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "ACME\\": "src/ACME/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7"
+    }
+}
