@@ -210,6 +210,37 @@ class TestStuff extends PHPUnit_Framework_TestCase {
         return $result;
     }
 
+    // completely removing foreach and if statements with array_reduce
+    // not that this should be done this way, just - it can be done :)
+    public function canCustomerBuyProducts_8($customer, $products) {
+        $validations = [
+            'age' => function($product) use ($customer) {
+                return $customer['age'] >= $product['age'];
+            },
+            'type' => function($product) use ($customer) {
+                return $customer['type'] == $product['type'];
+            }
+        ];
+
+        $validation = function($p) use ($validations) {
+            return array_reduce(array_keys($validations), function ($carry, $key) use ($p, $validations) {
+                $fn = $validations[$key];
+                $success = $fn($p);
+                return array_merge(
+                    $carry,
+                    [
+                        'success' => $carry['success'] && $success,
+                        'reasons' => array_merge($carry['reasons'], [$key => $success])
+                    ]
+                );
+            }, ['success' => true, 'reasons' => []]);
+        };
+
+        $result = array_map($validation, $products);
+
+        return $result;
+    }
+
     public function testThat() {
         $customer = [
             'age'  => 12,
@@ -231,7 +262,7 @@ class TestStuff extends PHPUnit_Framework_TestCase {
             ],
         ];
 
-        $result = $this->canCustomerBuyProducts_4($customer, $products);
+        $result = $this->canCustomerBuyProducts_8($customer, $products);
 
         var_dump($result);
     }
